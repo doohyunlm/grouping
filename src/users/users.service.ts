@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/users.entitiy';
 
 @Injectable()
@@ -13,6 +14,7 @@ export class UsersService {
   }
 
   deleteOne(no: number): void {
+    this.getOne(no);
     return;
   }
 
@@ -20,7 +22,8 @@ export class UsersService {
     return;
   }
 
-  update(no: number, UserData) {
+  update(no: number, updateData: UpdateUserDto) {
+    this.getOne(no);
     return;
   }
 }
