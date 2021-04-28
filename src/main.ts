@@ -7,7 +7,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const options = new DocumentBuilder()
-    .setTitle('grouping example')
+    .setTitle('grouping')
     .setDescription('The grouping API description')
     .setVersion('1.0')
     .addBearerAuth()

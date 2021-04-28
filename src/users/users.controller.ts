@@ -7,14 +7,15 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './users.model';
 import { UsersService } from './users.service';
 
 @Controller('users')
-@ApiBearerAuth()
 @ApiTags('users')
+@ApiBearerAuth()
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -23,23 +24,27 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @Get('/:id')
-  getOne(@Param('id') userid: number): Promise<User> {
-    return this.usersService.findOne(userid);
+  @Get('/:user_no')
+  @ApiResponse({ status: 200 })
+  @ApiResponse({ status: 404, description: 'user not found.' })
+  getOne(@Param('user_no') userNo: number): Promise<User> {
+    return this.usersService.findOne(userNo);
   }
 
+  @ApiBody({ type: CreateUserDto })
   @Post()
   create(@Body() userData: CreateUserDto): Promise<User> {
     return this.usersService.create(userData);
   }
 
-  @Delete('/:id')
-  remove(@Param('id') userid: number) {
-    return this.usersService.remove(userid);
+  @Delete('/:user_no')
+  remove(@Param('user_no') userNo: number) {
+    return this.usersService.remove(userNo);
   }
 
-  @Put('/:id')
-  update(@Param('id') userid: number, @Body() updateData) {
-    return this.usersService.update(userid, updateData);
+  @ApiBody({ type: UpdateUserDto })
+  @Put('/:user_no')
+  update(@Param('user_no') userNo: number, @Body() updateData: UpdateUserDto) {
+    return this.usersService.update(userNo, updateData);
   }
 }

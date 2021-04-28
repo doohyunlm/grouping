@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -20,25 +20,31 @@ export class UsersService {
     return user.save();
   }
 
-  findAll(): Promise<User[]> {
-    return this.userModel.findAll();
+  async findAll(): Promise<User[]> {
+    return await this.userModel.findAll();
   }
 
-  findOne(id: number): Promise<User> {
-    return this.userModel.findOne({
+  async findOne(user_no: number): Promise<User> {
+    const user = await this.userModel.findOne({
       where: {
-        id,
+        user_no,
       },
     });
+
+    if (!user) {
+      throw new NotFoundException('user not found.');
+    }
+
+    return user;
   }
 
-  async remove(id: number): Promise<void> {
-    const user = await this.findOne(id);
+  async remove(user_no: number): Promise<void> {
+    const user = await this.findOne(user_no);
     await user.destroy();
   }
 
-  async update(id: number, updateData: UpdateUserDto): Promise<User> {
-    const user = await this.findOne(id);
-    return;
+  async update(user_no: number, updateData: UpdateUserDto): Promise<User> {
+    const user = await this.findOne(user_no);
+    return user.update(updateData);
   }
 }
